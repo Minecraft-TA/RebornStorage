@@ -28,10 +28,6 @@ public abstract class ItemRebornStorageCellBase extends ItemBase implements ISto
 	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		super.onUpdate(stack, world, entity, slot, selected);
 		if (!world.isRemote) {
-			if (!isValid(stack)) {
-				API.instance().getOneSixMigrationHelper().migrateDisk(world, stack);
-			}
-
 			if (!stack.hasTagCompound()) {
 				UUID id = UUID.randomUUID();
 				API.instance().getStorageDiskManager(world).set(id, createDefaultDisk(world, getCapacity(stack)));

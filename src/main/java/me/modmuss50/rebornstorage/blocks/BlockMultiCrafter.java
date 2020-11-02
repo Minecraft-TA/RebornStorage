@@ -3,6 +3,7 @@ package me.modmuss50.rebornstorage.blocks;
 import com.google.common.collect.Lists;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNodeManager;
+import com.raoulvdberge.refinedstorage.api.util.Action;
 import com.raoulvdberge.refinedstorage.apiimpl.API;
 import me.modmuss50.rebornstorage.client.CreativeTabRebornStorage;
 import me.modmuss50.rebornstorage.lib.ModInfo;
@@ -152,7 +153,7 @@ public class BlockMultiCrafter extends BlockMultiblockBase {
 		manager.removeNode(pos);
 		manager.markForSaving();
 		if (node != null && node.getNetwork() != null) {
-			node.getNetwork().getNodeGraph().rebuild();
+			node.getNetwork().getNodeGraph().invalidate(Action.PERFORM, worldIn, pos);
 		}
 
 		worldIn.removeTileEntity(pos);
