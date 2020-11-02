@@ -1,4 +1,3 @@
-
 // For those who want the bleeding edge
 buildscript {
     repositories {
@@ -25,14 +24,10 @@ repositories {
         name "Mobius Repo"
         url "http://mobiusstrip.eu/maven"
     }
-	maven {
-		name "Raoulvdberge"
-		url  "https://repo.raoulvdberge.com/"
-	}
-	maven {
-		name = "Amadornes"
-		url "http://maven.amadornes.com/"
-	}
+    maven {
+        name = "Amadornes"
+        url "http://maven.amadornes.com/"
+    }
     maven {
         name "progwml"
         url "http://dvs1.progwml6.com/files/maven"
@@ -52,7 +47,7 @@ configFile.withReader {
 version = "${config.mod_version}"
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
-	version = version + "." + "${System.getenv().BUILD_NUMBER}"
+    version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
 group = "${config.group_id}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -66,33 +61,30 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile ('RebornCore:RebornCore-1.12.2:+:universal'){
-		transitive = false
-	}
-    deobfCompile ('refinedstorage:refinedstorage:1.6.12-+'){
-		transitive = false
-	}
+    compile files("libs/morerefinedstorage-2.2.1.jar")
+    deobfCompile('RebornCore:RebornCore-1.12.2:+:universal') {
+        transitive = false
+    }
 }
 
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
 
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
 
-                // replace version and mcversion
-                expand 'version':project.version, 'mcversion':project.minecraft.version
-            }
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
 
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
@@ -100,35 +92,3 @@ task deobfJar(type: Jar) {
 }
 
 build.dependsOn deobfJar
-
-
-import groovy.util.XmlSlurper
-import org.apache.commons.io.FileUtils
-
-task curseTools {
-	doLast {
-		def cacheFiles = new File(".gradle/curseTools")
-		if (!cacheFiles.exists()) {
-			cacheFiles.mkdirs()
-		}
-
-		def mavenMetadata = new File(cacheFiles, "maven-metadata.xml")
-
-		logger.lifecycle(":downloading curseTools metadata")
-		FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/maven-metadata.xml"), mavenMetadata)
-
-		def metadata = new XmlSlurper().parseText(FileUtils.readFileToString(mavenMetadata))
-		def curseToolsVersion = metadata.versioning.release
-
-		def curseTools = new File(cacheFiles, "${curseToolsVersion}.jar")
-
-		logger.lifecycle(":downloading CurseTools")
-		FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/${curseToolsVersion}/CurseTools-${curseToolsVersion}.jar"), curseTools)
-
-		logger.lifecycle(":launching CurseTools")
-		ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
-			arg(value: jar.archivePath.getAbsolutePath())
-			arg(value: deobfJar.archivePath.getAbsolutePath())
-		}
-	}
-}
