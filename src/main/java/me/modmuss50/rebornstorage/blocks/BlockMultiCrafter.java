@@ -153,7 +153,7 @@ public class BlockMultiCrafter extends BlockMultiblockBase {
 		manager.removeNode(pos);
 		manager.markForSaving();
 		if (node != null && node.getNetwork() != null) {
-			node.getNetwork().getNodeGraph().invalidate(Action.PERFORM, worldIn, pos);
+			node.getNetwork().getNodeGraph().invalidate(Action.PERFORM, node.getNetwork().world(), node.getNetwork().getPosition());
 		}
 
 		worldIn.removeTileEntity(pos);
