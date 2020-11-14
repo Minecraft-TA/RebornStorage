@@ -319,7 +319,7 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
     }
 
     public void updateMaxCraftingUpdates() {
-        //Dont do anything if we have less cpus than the craftings speed
+        //Dont do anything if we have less cpus than the crafting speed
         if (getCraftingCpus() < craftingSpeed) {
             this.maxCraftingUpdates = 1;
         }
@@ -333,7 +333,13 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
         if (!isValidMultiBlock(false)) {
             return 0;
         }
-        speed = getTile().getMultiBlock().speed;
+        TileMultiCrafter tile = getTile();
+        if (tile == null)
+            return 0;
+        MultiBlockCrafter multiBlock = tile.getMultiBlock();
+        if (multiBlock == null)
+            return 0;
+        speed = multiBlock.speed;
         return speed;
     }
 
