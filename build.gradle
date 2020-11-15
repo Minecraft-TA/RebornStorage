@@ -32,6 +32,7 @@ repositories {
         name "progwml"
         url "http://dvs1.progwml6.com/files/maven"
     }
+    maven { url 'https://jitpack.io' }
 }
 
 // define the properties file
@@ -61,7 +62,10 @@ minecraft {
 }
 
 dependencies {
-    compile files("libs/morerefinedstorage-2.2.1.jar")
+    compile('com.github.tth05:morerefinedstorage:v2.2.2') {
+        transitive = false
+    }
+
     deobfCompile('RebornCore:RebornCore-1.12.2:+:universal') {
         transitive = false
     }
