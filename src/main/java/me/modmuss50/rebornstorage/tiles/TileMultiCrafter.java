@@ -17,7 +17,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import reborncore.common.multiblock.IMultiblockPart;
 import reborncore.common.multiblock.MultiblockControllerBase;
 import reborncore.common.multiblock.MultiblockValidationException;
@@ -196,14 +195,14 @@ public class TileMultiCrafter extends RectangularMultiblockTileEntityBase implem
 	public CraftingNode getNode() {
 		if (world.isRemote) {
 			if (clientNode == null) {
-				clientNode = new CraftingNode(world, getPos());
+				clientNode = new CraftingNode(world, getPos(), getVarient());
 			}
 			return clientNode;
 		}
 		INetworkNodeManager manager = API.instance().getNetworkNodeManager(this.world);
 		INetworkNode node = manager.getNode(this.pos);
 		if (node == null || !node.getId().equals(RebornStorage.MULTI_BLOCK_ID)) {
-			manager.setNode(this.pos, node = new CraftingNode(world, getPos()));
+			manager.setNode(this.pos, node = new CraftingNode(world, getPos(), getVarient()));
 			manager.markForSaving();
 		}
 

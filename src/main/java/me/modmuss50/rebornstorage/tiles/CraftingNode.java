@@ -11,8 +11,10 @@ import com.raoulvdberge.refinedstorage.inventory.listener.ListenerNetworkNode;
 import com.raoulvdberge.refinedstorage.util.StackUtils;
 import me.modmuss50.rebornstorage.RebornStorage;
 import me.modmuss50.rebornstorage.RebornStorageEventHandler;
+import me.modmuss50.rebornstorage.blocks.BlockMultiCrafter;
 import me.modmuss50.rebornstorage.lib.ModInfo;
 import me.modmuss50.rebornstorage.multiblocks.MultiBlockCrafter;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -57,6 +59,9 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
     private int maxCraftingUpdates;
     private int craftingUpdatesLeft;
     private int updateInterval;
+    private int energyUsage = -1;
+
+    private final String variant;
 
     public void invalidate() {
         isValid = false;
@@ -139,9 +144,19 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
         }
     };
 
-    public CraftingNode(World world, BlockPos pos) {
+    public CraftingNode(World world, BlockPos pos, String variant) {
         this.world = world;
         this.pos = pos;
+
+        if (variant == null || variant.isEmpty()) {
+            IBlockState state = world.getBlockState(pos);
+            if (!(state.getBlock() instanceof BlockMultiCrafter))
+                variant = "unknown";
+            else
+                variant = state.getValue(BlockMultiCrafter.VARIANTS);
+        }
+
+        this.variant = variant;
     }
 
     public void rebuildPatterns(String reason) {
@@ -212,7 +227,23 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
 
     @Override
     public int getEnergyUsage() {
-        return 1;
+        if (this.energyUsage == -1) {
+            switch (this.variant) {
+                case "frame":
+                    this.energyUsage = 1;
+                    break;
+                case "cpu":
+                case "io":
+                case "heat":
+                    this.energyUsage = 0;
+                    break;
+                default:
+                    this.energyUsage = 50;
+                    break;
+            }
+        }
+
+        return this.energyUsage;
     }
 
     @Nonnull

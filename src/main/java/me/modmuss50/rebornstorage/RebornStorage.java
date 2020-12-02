@@ -46,7 +46,7 @@ public class RebornStorage {
 		MinecraftForge.EVENT_BUS.register(Packets.class);
 
 		API.instance().getNetworkNodeRegistry().add(MULTI_BLOCK_ID, (tag, world, pos) -> {
-			CraftingNode node = new CraftingNode(world, pos);
+			CraftingNode node = new CraftingNode(world, pos, tag.getString("variant"));
 			StackUtils.readItems(node.patterns, 0, tag);
 
 			return node;
