@@ -58,7 +58,7 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
 
     private int maxCraftingUpdates;
     private int craftingUpdatesLeft;
-    private int updateInterval;
+    private int updateInterval = 10;
     private int energyUsage = -1;
 
     private final String variant;
@@ -202,7 +202,7 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
         if (tileEntity instanceof TileMultiCrafter) {
             return (TileMultiCrafter) tileEntity;
         }
-        RebornCore.logHelper.debug(tileEntity + " is not an instance of TileMultiCrafter, this is an error and your RebornStorage multiblock may not work. Please report to the mod author");
+        RebornCore.logHelper.debug(tileEntity + " is not an instance of TileMultiCrafter, this is an error and your RebornStorage multiblock may not work. Please report to the mod author " + pos);
         return null;
     }
 
@@ -300,6 +300,11 @@ public class CraftingNode implements INetworkNode, ICraftingPatternContainer {
             rebuildPatterns("inv slot change");
             needsRebuild = false;
         }
+    }
+
+    @Override
+    public boolean isTickable() {
+        return variant.equals("storage");
     }
 
     @Override
