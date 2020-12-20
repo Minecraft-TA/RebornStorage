@@ -62,7 +62,7 @@ minecraft {
 }
 
 dependencies {
-    compile('com.github.tth05:morerefinedstorage:5ba10e6') {
+    compile('com.github.tth05:morerefinedstorage:v2.2.4') {
         transitive = false
     }
 

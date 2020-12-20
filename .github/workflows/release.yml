@@ -35,7 +35,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Changes in this Release
-            - More Refined Storage 2.2.2 compatibility
+            - More Refined Storage 2.2.4 compatibility
           draft: false
           prerelease: false
       - name: Upload jars to release
